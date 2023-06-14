@@ -47,5 +47,7 @@ workflows:
           create-repo: true
           dockerfile: Dockerfile
           path: .
-          repo: circleci-ecr-demo
+          repo: circleci-ecr
           tag: "udacity-project-${CIRCLE_WORKFLOW_ID:0:7}"
+          requires: [lint]
+
