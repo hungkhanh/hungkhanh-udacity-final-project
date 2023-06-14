@@ -1,0 +1,48 @@
+version: 2.1
+
+orbs:
+  aws-ecr: circleci/aws-ecr@8.2.1
+
+commands:
+  install_hadolint:
+    description: "Install hadolint v2.12.0"
+    steps:
+      - run:
+          command: |
+            wget -O ~/hadolint https://github.com/hadolint/hadolint/releases/download/v2.12.0/hadolint-Linux-x86_64
+            sudo chmod +x ~/hadolint
+
+jobs:
+  lint:
+    - checkout
+    - restore_cache:
+        keys: [dependencies]
+    - run:
+        name: install hadolint
+        command: |
+          wget -O ~/hadolint https://github.com/hadolint/hadolint/releases/download/v2.12.0/hadolint-Linux-x86_64
+          sudo chmod +x ~/hadolint
+    - run:
+        name: install node_modules
+        command: |
+          npm install
+    - run:
+        name: Lint Dockerfile
+        command: |
+          ~/hadolint Dockerfile
+    - save_cache:
+        paths: [node_modules]
+        key: dependencies    
+
+workflows:
+  default:
+    jobs:
+      - lint
+      - aws-ecr/build-and-push-image:
+          name: 'build-and-push-image'
+          context: aws-dev
+          create-repo: true
+          dockerfile: Dockerfile
+          path: .
+          repo: circleci-ecr-demo
+          tag: "udacity-project-${CIRCLE_WORKFLOW_ID:0:7}"
