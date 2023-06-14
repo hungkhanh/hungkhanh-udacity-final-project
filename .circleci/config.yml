@@ -37,15 +37,15 @@ jobs:
           paths: [node_modules]
           key: dependencies    
 
-  workflows:
-    default:
-      jobs:
-        - lint
-        # - aws-ecr/build-and-push-image:
-        #     name: 'build-and-push-image'
-        #     context: aws-dev
-        #     create-repo: true
-        #     dockerfile: Dockerfile
-        #     path: .
-        #     repo: circleci-ecr-demo
-        #     tag: "udacity-project-${CIRCLE_WORKFLOW_ID:0:7}"
+workflows:
+  default:
+    jobs:
+      - lint
+      # - aws-ecr/build-and-push-image:
+      #     name: 'build-and-push-image'
+      #     context: aws-dev
+      #     create-repo: true
+      #     dockerfile: Dockerfile
+      #     path: .
+      #     repo: circleci-ecr-demo
+      #     tag: "udacity-project-${CIRCLE_WORKFLOW_ID:0:7}"
