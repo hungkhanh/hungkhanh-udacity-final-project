@@ -71,11 +71,9 @@ workflows:
           tag: "udacity-project-${CIRCLE_WORKFLOW_ID:0:7}"
           requires:
             - lint
-      - set-environment-variables
       - aws-eks/create-cluster:
           cluster-name: eks-orb-circle-ci
           aws-region: $AWS_DEFAULT_REGION
           requires: 
             - build-and-push-image      
-            - set-environment-variables
 
