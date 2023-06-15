@@ -39,15 +39,6 @@ jobs:
           paths: [node_modules]
           key: dependencies    
 
-  set-environment-variables:
-    context: udacity
-    steps:
-      - run:
-          name: Set Environment Variables
-          command: |
-            export AWS_ECR_URL="${AWS_ECR_REGISTRY_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com"
-            echo "AWS_ECR_URL=${AWS_ECR_URL}" >> $BASH_ENV
-
   create-deployment:
     executor: aws-eks/python3
     parameters:
@@ -66,7 +57,6 @@ jobs:
           get-rollout-status: true
           show-kubectl-command: true
     
-
 workflows:
   default:
     jobs:
