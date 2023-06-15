@@ -38,7 +38,16 @@ jobs:
       - save_cache:
           paths: [node_modules]
           key: dependencies    
-          
+
+  set-environment-variables:
+    context: udacity
+      steps:
+        - run:
+            name: Set Environment Variables
+            command: |
+              export AWS_ECR_URL="${AWS_ECR_REGISTRY_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com"
+              echo "AWS_ECR_URL=${AWS_ECR_URL}" >> $BASH_ENV
+
   create-deployment:
     executor: aws-eks/python3
     parameters:
@@ -70,10 +79,13 @@ workflows:
           path: .
           repo: circleci-ecr
           tag: "udacity-project-${CIRCLE_WORKFLOW_ID:0:7}"
-          requires: [lint]
+          requires:
+            - lint
+      - set-environment-variables
       - aws-eks/create-cluster:
           cluster-name: eks-orb-circle-ci
           aws-region: $AWS_DEFAULT_REGION
-          requires:
+          requires: 
             - build-and-push-image      
+            - set-environment-variables
 
