@@ -1,0 +1,71 @@
+Description: >
+  Project: Capstone - Cloud DevOps
+
+Parameters:
+  EnvironmentName:
+    Type: String
+    Description: An environment name that will be prefixed to resource names
+
+Resources:
+  EKSClusterRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: EKSClusterRole
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: eks.amazonaws.com
+            Action: sts:AssumeRole
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/AmazonEKSClusterPolicy
+        - arn:aws:iam::aws:policy/AmazonEKSServicePolicy
+        - arn:aws:iam::aws:policy/ElasticLoadBalancingFullAccess        
+  EKSClusterSG:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      VpcId:
+        Fn::ImportValue: !Sub "${EnvironmentName}-VPCID"
+      GroupDescription: Security group for EKS Cluster
+      SecurityGroupEgress:
+        # all
+        - IpProtocol: tcp
+          FromPort: 0
+          ToPort: 65535
+          CidrIp: 0.0.0.0/0
+      SecurityGroupIngress:
+        # http
+        - IpProtocol: tcp
+          FromPort: 80
+          ToPort: 80
+          CidrIp: 0.0.0.0/0
+      Tags:
+        - Key: Name
+          Value: !Sub ${EnvironmentName} - EKS Cluster SG          
+  EKSCluster:
+    Type: AWS::EKS::Cluster
+    Properties:
+      Version: "1.20"
+      RoleArn: !GetAtt EKSClusterRole.Arn
+      ResourcesVpcConfig:
+        SecurityGroupIds:
+          - !Ref EKSClusterSG
+        SubnetIds:
+          Fn::Split:
+            - ","
+            - Fn::ImportValue:
+                !Sub "${EnvironmentName}-PUB-NETS"
+
+Outputs:
+  EKSClusterID:
+    Description: The ID of EKS-Cluster
+    Value: !Ref EKSCluster
+    Export:
+      Name: !Sub ${EnvironmentName}-EKS-Cluster
+  
+  EKSClusterRoleArn:
+    Description: The role use to create Kubernetes clusters
+    Value: !GetAtt EKSClusterRole.Arn
+    Export:
+      Name: !Sub "${EnvironmentName}-EKSRoleArn"
