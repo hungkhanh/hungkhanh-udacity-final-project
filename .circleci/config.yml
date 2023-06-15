@@ -122,4 +122,4 @@ workflows:
           cluster-name: eks-orb-circle-ci
           aws-region: $AWS_DEFAULT_REGION
           requires:
-            - test-cluster            
+            - aws-eks/create-cluster
