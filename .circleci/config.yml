@@ -76,4 +76,3 @@ workflows:
           aws-region: $AWS_DEFAULT_REGION
           requires: 
             - build-and-push-image      
-
