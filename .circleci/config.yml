@@ -67,6 +67,13 @@ jobs:
           resource-name: deployment/hungpham-application
           get-rollout-status: true
           show-kubectl-command: true
+      - kubernetes/create-or-update-resource:
+          resource-file-path: kubernetes/auth.yml
+          resource-name: configmap/aws-auth
+      - run:
+          name: Get nodes
+          command: |
+            kubectl get nodes                 
 
 workflows:
   default:
@@ -93,6 +100,7 @@ workflows:
           aws-region: $AWS_DEFAULT_REGION
           requires:
             - aws-eks/create-cluster
+            
 
       # - aws-eks/delete-cluster:
       #     cluster-name: eks-orb-circle-ci
