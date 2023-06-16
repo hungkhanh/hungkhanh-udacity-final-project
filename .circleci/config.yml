@@ -100,8 +100,6 @@ workflows:
           aws-region: $AWS_DEFAULT_REGION
           requires:
             - aws-eks/create-cluster
-            
-
       # - aws-eks/delete-cluster:
       #     cluster-name: eks-orb-circle-ci
       #     aws-region: $AWS_DEFAULT_REGION
