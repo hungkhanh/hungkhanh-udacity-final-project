@@ -66,9 +66,9 @@ jobs:
           resource-name: deployment/hungpham-application
           get-rollout-status: true
           show-kubectl-command: true
-      - kubernetes/create-or-update-resource:
-          resource-file-path: kubernetes/auth.yml
-          resource-name: configmap/aws-auth
+      # - kubernetes/create-or-update-resource:
+      #     resource-file-path: kubernetes/auth.yml
+      #     resource-name: configmap/aws-auth
       - run:
           name: Get nodes
           command: |
