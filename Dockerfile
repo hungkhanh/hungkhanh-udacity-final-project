@@ -1,4 +1,5 @@
 FROM node:18-alpine
+FROM python
 
 WORKDIR /app
 
