@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: hungpham-application
+  labels:
+    app: hungpham-application
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: hungpham-application
+  template:
+    metadata:
+      labels:
+        app: hungpham-application
+    spec:
+      containers:
+      - name: hungpham-application-container
+        image: 069326107975.dkr.ecr.us-east-1.amazonaws.com/circleci-ecr:udacity-project
+        ports:
+        - containerPort: 3000
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: hungpham-application-service
+spec:
+  selector:
+    app: hungpham-application
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 3000
+  type: LoadBalancer
+
