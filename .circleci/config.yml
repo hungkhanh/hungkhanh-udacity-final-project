@@ -94,7 +94,6 @@ workflows:
           requires:
             - aws-eks/create-cluster
 
-      # OK
       # - aws-eks/delete-cluster:
       #     cluster-name: eks-orb-circle-ci
       #     aws-region: $AWS_DEFAULT_REGION
