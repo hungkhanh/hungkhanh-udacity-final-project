@@ -66,13 +66,13 @@ jobs:
           resource-name: deployment/hungpham-application
           get-rollout-status: true
           show-kubectl-command: true
-      # - kubernetes/create-or-update-resource:
-      #     resource-file-path: kubernetes/auth.yml
-      #     resource-name: configmap/aws-auth
       - run:
-          name: Get nodes
+          name: Get cluster
           command: |
-            kubectl get nodes                 
+            kubectl get nodes
+            kubectl get pod -o wide
+            kubectl get deployment
+            kubectl get services
 
 workflows:
   default:
@@ -86,7 +86,6 @@ workflows:
           path: .
           repo: circleci-ecr
           tag: "udacity-project"
-          # tag: "udacity-project-${CIRCLE_WORKFLOW_ID:0:7}"
           requires:
             - lint
       - aws-eks/create-cluster:
@@ -97,11 +96,15 @@ workflows:
       - deploy-application:
           cluster-name: eks-stack
           aws-region: $AWS_DEFAULT_REGION
+          filters:
+            branches:
+              only:
+                - master
           requires:
             - aws-eks/create-cluster
       # - aws-eks/delete-cluster:
       #     cluster-name: eks-stack
       #     aws-region: $AWS_DEFAULT_REGION
       #     when: on_fail
-          # requires:
-          #   - aws-eks/create-cluster
+      #     requires:
+      #       - deploy-application
